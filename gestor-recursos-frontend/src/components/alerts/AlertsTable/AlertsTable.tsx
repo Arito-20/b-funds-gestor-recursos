@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import type { AlertNotification, AlertType, AlertStatus } from '../../../types';
 import EmptyState from '../../shared/EmptyState/EmptyState';
-import { formatDateTime, formatPeriodMonth } from '../../../utils/format';
+import { formatDateTimeCompact, formatPeriodMonth } from '../../../utils/format';
 import './AlertsTable.css';
 
 const ALERT_TYPE_OPTIONS: { value: AlertType; label: string }[] = [
@@ -45,6 +45,11 @@ const STATUS_BADGE_CLASS: Record<AlertStatus, string> = {
 
 interface AlertsTableProps {
   alerts: AlertNotification[];
+}
+
+function formatAlertMessage(message?: string | null): string {
+  if (!message) return '—';
+  return message.replace(/^\[(MOCK|SENT|FAILED)\]\s*/, '');
 }
 
 function getManagerName(alert: AlertNotification): string {
@@ -162,7 +167,7 @@ export default function AlertsTable({ alerts }: AlertsTableProps) {
                   <th className="alerts-table__th">Manager</th>
                   <th className="alerts-table__th">Iniciativa</th>
                   <th className="alerts-table__th">Mensaje</th>
-                  <th className="alerts-table__th">Estado</th>
+                  <th className="alerts-table__th alerts-table__th--center">Estado</th>
                   <th className="alerts-table__th">Fecha</th>
                 </tr>
               </thead>
@@ -188,16 +193,16 @@ export default function AlertsTable({ alerts }: AlertsTableProps) {
                     <td className="alerts-table__td alerts-table__muted">{getInitiativeName(alert)}</td>
                     <td className="alerts-table__td">
                       <span className="alerts-table__message" title={alert.message ?? undefined}>
-                        {alert.message ?? '—'}
+                        {formatAlertMessage(alert.message)}
                       </span>
                     </td>
-                    <td className="alerts-table__td">
+                    <td className="alerts-table__td alerts-table__td--center">
                       <span className={`alert-badge ${STATUS_BADGE_CLASS[alert.status]}`}>
                         {STATUS_LABELS[alert.status]}
                       </span>
                     </td>
-                    <td className="alerts-table__td alerts-table__muted">
-                      {formatDateTime(alert.sentAt)}
+                    <td className="alerts-table__td alerts-table__td--date">
+                      {formatDateTimeCompact(alert.sentAt)}
                     </td>
                   </tr>
                 ))}

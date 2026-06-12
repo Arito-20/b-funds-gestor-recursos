@@ -1,8 +1,9 @@
-import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiSecurity } from '@nestjs/swagger';
 import { AlertsService } from './alerts.service';
 import { MockAuthGuard } from '../../common/guards/mock-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { TestEmailDto } from './dto/test-email.dto';
 
 @ApiTags('Alerts')
 @ApiSecurity('demo-auth')
@@ -14,6 +15,11 @@ export class AlertsController {
   @Post('run-validation')
   runValidation(@CurrentUser() user: any) {
     return this.alertsService.runValidation(user.managerId, user.role);
+  }
+
+  @Post('test-email')
+  testEmail(@CurrentUser() user: any, @Body() body: TestEmailDto) {
+    return this.alertsService.sendTestEmail(user.email, body?.to);
   }
 
   @Get('summary')

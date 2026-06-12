@@ -6,6 +6,7 @@ import { PurchaseOrder } from '../../domain/entities/purchase-order.entity';
 import { Manager } from '../../domain/entities/manager.entity';
 import { AlertsController } from './alerts.controller';
 import { AlertsService } from './alerts.service';
+import { EmailService } from './email/email.service';
 
 @Module({
   imports: [
@@ -17,6 +18,6 @@ import { AlertsService } from './alerts.service';
     ]),
   ],
   controllers: [AlertsController],
-  providers: [AlertsService],
+  providers: [AlertsService, EmailService],
 })
 export class AlertsModule {}

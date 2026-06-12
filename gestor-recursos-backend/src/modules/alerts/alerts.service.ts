@@ -12,13 +12,9 @@ import {
   ResourceStatus,
   PurchaseOrderStatus,
 } from '../../domain/enums';
-
-interface MockedEmail {
-  managerName: string;
-  managerEmail: string;
-  subject: string;
-  message: string;
-}
+import { EmailService } from './email/email.service';
+import { AlertEmailRecord } from './email/email.types';
+import { SendAlertEmailResult } from './email/email.types';
 
 export interface RunValidationResult {
   processedResources: number;
@@ -31,7 +27,21 @@ export interface RunValidationResult {
     EXPIRED: number;
     PO_PENDING: number;
   };
-  mockedEmails: MockedEmail[];
+  emails: AlertEmailRecord[];
+  mockedEmails: Array<{
+    managerName: string;
+    managerEmail: string;
+    subject: string;
+    message: string;
+  }>;
+}
+
+export interface TestEmailResult {
+  status: 'MOCKED' | 'SENT' | 'FAILED';
+  recipient: string;
+  subject: string;
+  message: string;
+  error?: string;
 }
 
 @Injectable()
@@ -45,6 +55,7 @@ export class AlertsService {
     private readonly poRepository: Repository<PurchaseOrder>,
     @InjectRepository(Manager)
     private readonly managerRepository: Repository<Manager>,
+    private readonly emailService: EmailService,
   ) {}
 
   async runValidation(managerId?: number, role?: string): Promise<RunValidationResult> {
@@ -59,6 +70,7 @@ export class AlertsService {
         EXPIRED: 0,
         PO_PENDING: 0,
       },
+      emails: [],
       mockedEmails: [],
     };
 
@@ -70,51 +82,58 @@ export class AlertsService {
       const alertType = this.getResourceAlertType(daysRemaining);
       if (!alertType) continue;
 
-      const created = await this.createAlertIfNotDuplicate({
+      const subject = this.buildResourceSubject(resource, alertType);
+      const plainMessage = this.buildResourcePlainMessage(resource, alertType, daysRemaining);
+
+      await this.createAlertIfNotDuplicate({
         alertType,
         resourceId: resource.id,
         purchaseOrderId: null,
         managerId: resource.managerId,
         daysRemaining,
-        message: this.buildResourceMessage(resource, alertType, daysRemaining),
+        subject,
+        plainMessage,
         manager: resource.manager,
+        consultantName: resource.consultantName,
         result,
       });
-
-      if (created) {
-        result.mockedEmails.push(this.buildMockedEmail(
-          resource.manager,
-          this.buildResourceSubject(resource, alertType),
-          this.buildResourceMessage(resource, alertType, daysRemaining),
-        ));
-      }
     }
 
     const purchaseOrders = await this.getVisiblePendingPurchaseOrders(managerId, role);
     result.processedPurchaseOrders = purchaseOrders.length;
 
     for (const po of purchaseOrders) {
-      const created = await this.createAlertIfNotDuplicate({
+      const subject = this.buildPoSubject(po);
+      const plainMessage = this.buildPoPlainMessage(po);
+
+      await this.createAlertIfNotDuplicate({
         alertType: AlertType.PO_PENDING,
         resourceId: po.resourceId,
         purchaseOrderId: po.id,
         managerId: po.resource.managerId,
         daysRemaining: null,
-        message: this.buildPoMessage(po),
+        subject,
+        plainMessage,
         manager: po.resource.manager,
+        consultantName: po.resource.consultantName,
         result,
       });
-
-      if (created) {
-        result.mockedEmails.push(this.buildMockedEmail(
-          po.resource.manager,
-          this.buildPoSubject(po),
-          this.buildPoMessage(po),
-        ));
-      }
     }
 
     return result;
+  }
+
+  async sendTestEmail(userEmail?: string, to?: string): Promise<TestEmailResult> {
+    const recipient = to?.trim() || userEmail?.trim() || 'manager@belcorp.com';
+    const emailResult = await this.emailService.sendTestEmail(recipient);
+
+    return {
+      status: emailResult.status,
+      recipient: emailResult.recipient,
+      subject: emailResult.subject,
+      message: emailResult.message,
+      error: emailResult.error,
+    };
   }
 
   async findAll(managerId?: number, role?: string): Promise<AlertNotification[]> {
@@ -217,8 +236,10 @@ export class AlertsService {
     purchaseOrderId: number | null;
     managerId: number;
     daysRemaining: number | null;
-    message: string;
+    subject: string;
+    plainMessage: string;
     manager?: Manager;
+    consultantName?: string;
     result: RunValidationResult;
   }): Promise<boolean> {
     const isDuplicate = await this.existsDuplicateToday({
@@ -239,21 +260,63 @@ export class AlertsService {
       }) ?? undefined;
     }
 
+    const managerEmail = params.manager?.email ?? 'manager@belcorp.com';
+    const emailResult = await this.emailService.sendAlertEmail({
+      to: managerEmail,
+      subject: params.subject,
+      message: params.plainMessage,
+      alertType: params.alertType,
+      managerName: params.manager?.name,
+      consultantName: params.consultantName,
+    });
+
     const alert = new AlertNotification();
     alert.alertType = params.alertType;
     alert.resourceId = params.resourceId;
     alert.purchaseOrderId = params.purchaseOrderId;
     alert.managerId = params.managerId;
     alert.daysRemaining = params.daysRemaining;
-    alert.status = AlertStatus.MOCKED;
-    alert.message = params.message;
+    alert.status = this.mapEmailStatus(emailResult);
+    alert.message = this.buildStoredMessage(emailResult);
 
     await this.alertRepository.save(alert);
 
     params.result.createdAlerts += 1;
     params.result.alertsByType[params.alertType] += 1;
 
+    const emailRecord: AlertEmailRecord = {
+      managerName: params.manager?.name ?? 'Manager',
+      managerEmail,
+      recipient: emailResult.recipient,
+      subject: emailResult.subject,
+      message: alert.message,
+      status: emailResult.status,
+    };
+    params.result.emails.push(emailRecord);
+
+    if (emailResult.status === 'MOCKED') {
+      params.result.mockedEmails.push({
+        managerName: emailRecord.managerName,
+        managerEmail: emailRecord.managerEmail,
+        subject: emailResult.subject,
+        message: alert.message,
+      });
+    }
+
     return true;
+  }
+
+  private mapEmailStatus(result: SendAlertEmailResult): AlertStatus {
+    if (result.status === 'SENT') return AlertStatus.SENT;
+    if (result.status === 'FAILED') return AlertStatus.FAILED;
+    return AlertStatus.MOCKED;
+  }
+
+  private buildStoredMessage(result: SendAlertEmailResult): string {
+    if (result.status === 'FAILED') {
+      return `[FAILED] No se pudo enviar correo a ${result.recipient}: ${result.error ?? 'Error desconocido'}`;
+    }
+    return result.message;
   }
 
   private async existsDuplicateToday(params: {
@@ -310,40 +373,22 @@ export class AlertsService {
     return `${labels[alertType]} - ${resource.consultantName}`;
   }
 
-  private buildResourceMessage(
+  private buildResourcePlainMessage(
     resource: Resource,
     alertType: AlertType,
     daysRemaining: number,
   ): string {
-    const managerEmail = resource.manager?.email ?? 'manager@belcorp.com';
-    const endDate = resource.endDate;
-
     if (alertType === AlertType.EXPIRED) {
-      return `[MOCK] Se enviaría correo a ${managerEmail}: el recurso "${resource.consultantName}" (${resource.profile}) venció hace ${Math.abs(daysRemaining)} día(s). Fecha fin: ${endDate}.`;
+      return `El recurso "${resource.consultantName}" (${resource.profile}) venció hace ${Math.abs(daysRemaining)} día(s). Fecha fin: ${resource.endDate}.`;
     }
-
-    return `[MOCK] Se enviaría correo a ${managerEmail}: el recurso "${resource.consultantName}" (${resource.profile}) vence en ${daysRemaining} día(s). Fecha fin: ${endDate}.`;
+    return `El recurso "${resource.consultantName}" (${resource.profile}) vence en ${daysRemaining} día(s). Fecha fin: ${resource.endDate}.`;
   }
 
   private buildPoSubject(po: PurchaseOrder): string {
     return `OC pendiente - ${po.periodMonth} - ${po.resource.consultantName}`;
   }
 
-  private buildPoMessage(po: PurchaseOrder): string {
-    const managerEmail = po.resource.manager?.email ?? 'manager@belcorp.com';
-    return `[MOCK] Se enviaría correo a ${managerEmail}: OC pendiente del periodo ${po.periodMonth} para el recurso "${po.resource.consultantName}" (${po.resource.profile}). Monto: ${po.amountUsd} USD.`;
-  }
-
-  private buildMockedEmail(
-    manager: Manager | undefined,
-    subject: string,
-    message: string,
-  ): MockedEmail {
-    return {
-      managerName: manager?.name ?? 'Manager',
-      managerEmail: manager?.email ?? 'manager@belcorp.com',
-      subject,
-      message,
-    };
+  private buildPoPlainMessage(po: PurchaseOrder): string {
+    return `OC pendiente del periodo ${po.periodMonth} para el recurso "${po.resource.consultantName}" (${po.resource.profile}). Monto: ${po.amountUsd} USD.`;
   }
 }

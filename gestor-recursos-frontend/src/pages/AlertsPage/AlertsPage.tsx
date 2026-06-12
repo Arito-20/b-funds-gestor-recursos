@@ -26,6 +26,8 @@ export default function AlertsPage() {
   const [summary, setSummary] = useState<AlertsSummary>(EMPTY_SUMMARY);
   const [loading, setLoading] = useState(true);
   const [running, setRunning] = useState(false);
+  const [testingEmail, setTestingEmail] = useState(false);
+  const [hasRunBefore, setHasRunBefore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastResult, setLastResult] = useState<RunAlertValidationResponse | null>(null);
   const [toast, setToast] = useState<string | null>(null);
@@ -60,6 +62,7 @@ export default function AlertsPage() {
     try {
       const res = await alertsApi.runAlertValidation();
       setLastResult(res.data);
+      setHasRunBefore(true);
       await loadData();
 
       const { createdAlerts, skippedDuplicates } = res.data;
@@ -74,6 +77,26 @@ export default function AlertsPage() {
       showToast('Error al ejecutar la validación');
     } finally {
       setRunning(false);
+    }
+  };
+
+  const handleTestEmail = async () => {
+    setTestingEmail(true);
+    try {
+      const res = await alertsApi.testAlertEmail();
+      const { status, error } = res.data;
+
+      if (status === 'MOCKED') {
+        showToast('Prueba ejecutada en modo mock. No se envió correo real.');
+      } else if (status === 'SENT') {
+        showToast('Correo de prueba enviado correctamente.');
+      } else {
+        showToast(`Error al enviar correo de prueba: ${error ?? 'Error desconocido'}`);
+      }
+    } catch {
+      showToast('Error al ejecutar la prueba de correo');
+    } finally {
+      setTestingEmail(false);
     }
   };
 
@@ -103,7 +126,10 @@ export default function AlertsPage() {
 
       <AlertRunPanel
         onRun={handleRunValidation}
+        onTestEmail={handleTestEmail}
         running={running}
+        testingEmail={testingEmail}
+        hasRunBefore={hasRunBefore}
         lastResult={lastResult}
       />
 

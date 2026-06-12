@@ -47,4 +47,14 @@ export function formatDateTime(dateStr: string): string {
   });
 }
 
+export function formatDateTimeCompact(dateStr: string): string {
+  const date = new Date(dateStr);
+  return date.toLocaleString('es-PE', {
+    day: '2-digit',
+    month: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
 export { parseLocalDate, calculateDaysRemaining } from './dates';

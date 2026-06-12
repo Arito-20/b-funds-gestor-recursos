@@ -5,6 +5,7 @@ import type {
   AlertNotification,
   AlertsSummary,
   RunAlertValidationResponse,
+  TestAlertEmailResponse,
 } from '../types';
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
@@ -56,4 +57,6 @@ export const alertsApi = {
   getAlerts: () => api.get<AlertNotification[]>('/api/alerts'),
   getAlertsSummary: () => api.get<AlertsSummary>('/api/alerts/summary'),
   runAlertValidation: () => api.post<RunAlertValidationResponse>('/api/alerts/run-validation'),
+  testAlertEmail: (to?: string) =>
+    api.post<TestAlertEmailResponse>('/api/alerts/test-email', to ? { to } : {}),
 };

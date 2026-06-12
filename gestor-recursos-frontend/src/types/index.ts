@@ -247,6 +247,15 @@ export interface Manager {
     failed: number;
   }
 
+  export interface AlertEmailRecord {
+    managerName: string;
+    managerEmail: string;
+    recipient: string;
+    subject: string;
+    message: string;
+    status: AlertStatus;
+  }
+
   export interface RunAlertValidationResponse {
     processedResources: number;
     processedPurchaseOrders: number;
@@ -258,10 +267,19 @@ export interface Manager {
       EXPIRED: number;
       PO_PENDING: number;
     };
+    emails: AlertEmailRecord[];
     mockedEmails: Array<{
       managerName: string;
       managerEmail: string;
       subject: string;
       message: string;
     }>;
+  }
+
+  export interface TestAlertEmailResponse {
+    status: AlertStatus;
+    recipient: string;
+    subject: string;
+    message: string;
+    error?: string;
   }

@@ -3,7 +3,7 @@
 .alerts-page {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 14px;
 }
 
 .alerts-page__header {
