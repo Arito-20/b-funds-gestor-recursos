@@ -1,0 +1,170 @@
+.expiration-table {
+  background: var(--white);
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.expiration-table__header {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--gray-200);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.expiration-table__header-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: var(--purple-lila);
+  color: var(--purple-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.expiration-table__title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+.expiration-table__scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.expiration-table__table {
+  min-width: 680px;
+}
+
+.expiration-table__thead {
+  background: var(--purple-soft);
+}
+
+.expiration-table__th {
+  padding: 8px 12px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--purple-deep);
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.expiration-table__td {
+  padding: 9px 12px;
+  font-size: 0.8125rem;
+  border-top: 1px solid var(--gray-200);
+  vertical-align: middle;
+}
+
+.expiration-table__td--name {
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+.expiration-table__td--muted {
+  color: var(--gray-500);
+}
+
+.expiration-table__row:hover {
+  background: #faf5ff;
+}
+
+.expiration-table__row--expired {
+  background: #fef2f2;
+}
+
+.expiration-table__days {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  padding: 3px 7px;
+  border-radius: 7px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.expiration-table__days--expired {
+  color: var(--gray-500);
+  background: var(--gray-100);
+}
+
+.expiration-table__days--red {
+  color: #dc2626;
+  background: #fee2e2;
+}
+
+.expiration-table__days--amber {
+  color: #b45309;
+  background: #fef3c7;
+}
+
+.expiration-table__empty {
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.expiration-table__empty-icon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--success-bg);
+  color: var(--success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.expiration-table__empty-text {
+  min-width: 0;
+}
+
+.expiration-table__empty-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--gray-800);
+  line-height: 1.35;
+}
+
+.expiration-table__empty-subtitle {
+  font-size: 0.75rem;
+  color: var(--gray-500);
+  margin-top: 2px;
+  line-height: 1.35;
+}
+
+.action-badge {
+  display: inline-flex;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  font-size: 0.625rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.action-badge--expired {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.action-badge--urgent {
+  background: #ffedd5;
+  color: #ea580c;
+}
+
+.action-badge--plan {
+  background: var(--warning-bg);
+  color: var(--warning);
+}

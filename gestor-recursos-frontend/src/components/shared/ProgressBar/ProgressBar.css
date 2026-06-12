@@ -1,0 +1,27 @@
+.progress-bar__track {
+  height: 10px;
+  background: var(--purple-lila);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progress-bar__fill {
+  height: 100%;
+  border-radius: 9999px;
+}
+
+.progress-bar__fill--default {
+  background: linear-gradient(90deg, var(--purple-main), var(--purple-light));
+}
+
+.progress-bar__fill--warning {
+  background: linear-gradient(90deg, var(--warning), #fbbf24);
+}
+
+.progress-bar__fill--danger {
+  background: linear-gradient(90deg, var(--danger), #ef4444);
+}
+
+.progress-bar__fill--animated {
+  animation: progressFill 0.8s ease-out both;
+}

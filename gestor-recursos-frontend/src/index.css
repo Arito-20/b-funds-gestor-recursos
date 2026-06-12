@@ -1,0 +1,28 @@
+@import "tailwindcss";
+@import "./styles/variables.css";
+@import "./styles/animations.css";
+@import "./styles/scrollbar.css";
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--purple-soft);
+  color: var(--gray-800);
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.text-gradient {
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-image: var(--gradient-text);
+}

@@ -1,0 +1,24 @@
+.skeleton-block {
+  border-radius: 8px;
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+
+.skeleton-card {
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+  padding: 20px;
+}
+
+.skeleton-table-row {
+  display: flex;
+  gap: 16px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.skeleton-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}

@@ -1,0 +1,30 @@
+:root {
+  --purple-deep: #3b0764;
+  --purple-main: #7c3aed;
+  --purple-light: #a855f7;
+  --purple-lila: #ede9fe;
+  --purple-soft: #f5f3ff;
+  --accent: #c084fc;
+  --white: #ffffff;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-500: #6b7280;
+  --gray-800: #1f2937;
+  --success: #16a34a;
+  --success-bg: #dcfce7;
+  --warning: #d97706;
+  --warning-bg: #fef9c3;
+  --danger: #dc2626;
+  --danger-bg: #fee2e2;
+  --expired: #6b7280;
+  --expired-bg: #f3f4f6;
+  --sidebar-width: 196px;
+  --header-height: 64px;
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-card-hover: 0 8px 24px rgba(59, 7, 100, 0.12);
+  --shadow-sidebar: 4px 0 24px rgba(59, 7, 100, 0.3);
+  --gradient-purple: linear-gradient(90deg, #7e22ce 0%, #9333ea 100%);
+  --gradient-sidebar: linear-gradient(180deg, #3b0764 0%, #1e0a3c 100%);
+  --gradient-text: linear-gradient(90deg, #6b21a8, #a855f7);
+}

@@ -1,0 +1,128 @@
+.country-cards-section {
+  min-width: 0;
+}
+
+.country-cards-section--embedded {
+  background: var(--white);
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+  padding: 10px 12px;
+}
+
+.country-cards-section__title {
+  font-size: clamp(0.75rem, 0.85vw, 0.8125rem);
+  font-weight: 600;
+  color: var(--gray-800);
+  margin-bottom: 8px;
+}
+
+.country-cards-section__empty {
+  background: var(--white);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.country-cards-section--embedded .country-cards-section__empty {
+  background: var(--purple-soft);
+  box-shadow: none;
+}
+
+.country-cards-section__empty-text {
+  font-size: clamp(0.75rem, 0.8vw, 0.8125rem);
+  color: var(--gray-500);
+}
+
+.country-cards-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.country-cards-grid--count-1 {
+  grid-template-columns: minmax(0, 240px);
+}
+
+.country-cards-grid--count-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.country-cards-grid--count-3 {
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+}
+
+.country-card {
+  background: var(--white);
+  border-radius: 10px;
+  box-shadow: var(--shadow-card);
+  padding: 10px 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: fadeInUp 0.35s ease-out both;
+  min-width: 0;
+}
+
+.country-cards-section--embedded .country-card {
+  box-shadow: none;
+  border: 1px solid var(--gray-200);
+}
+
+.country-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.country-cards-section--embedded .country-card:hover {
+  box-shadow: none;
+  border-color: var(--purple-lila);
+}
+
+.country-card__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.country-card__icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: var(--purple-lila);
+  color: var(--purple-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.country-card__info {
+  min-width: 0;
+}
+
+.country-card__name {
+  font-weight: 600;
+  font-size: clamp(0.75rem, 0.8vw, 0.8125rem);
+  color: var(--gray-800);
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.country-card__count {
+  font-size: clamp(0.5625rem, 0.65vw, 0.625rem);
+  color: var(--gray-500);
+  margin-top: 1px;
+}
+
+.country-card__amount {
+  font-size: clamp(0.875rem, 0.95vw, 0.9375rem);
+  font-weight: 700;
+  color: var(--gray-800);
+  line-height: 1.15;
+  word-break: break-word;
+}
+
+.country-card__label {
+  font-size: clamp(0.5625rem, 0.65vw, 0.625rem);
+  color: var(--gray-500);
+  margin-top: 2px;
+}

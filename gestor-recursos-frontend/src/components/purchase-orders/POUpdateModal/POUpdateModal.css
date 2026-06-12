@@ -1,0 +1,124 @@
+.po-update-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.po-update-modal__context {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  background: var(--purple-soft);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.po-update-modal__context-item--wide {
+  grid-column: 1 / -1;
+}
+
+.po-update-modal__context-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--purple-main);
+  margin-bottom: 4px;
+}
+
+.po-update-modal__context-value {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--gray-800);
+  line-height: 1.3;
+}
+
+.po-update-modal__field {
+  display: flex;
+  flex-direction: column;
+}
+
+.po-update-modal__label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--gray-500);
+  margin-bottom: 4px;
+}
+
+.po-update-modal__input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+  font-size: 0.875rem;
+  color: var(--gray-800);
+  background: var(--white);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.po-update-modal__input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.3);
+  border-color: var(--purple-main);
+}
+
+.po-update-modal__input--hint {
+  border-color: var(--warning);
+  background: var(--warning-bg);
+}
+
+.po-update-modal__hint {
+  font-size: 0.75rem;
+  color: var(--warning);
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+.po-update-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.po-update-modal__btn-primary {
+  background: var(--gradient-purple);
+  color: var(--white);
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.po-update-modal__btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -10px rgba(126, 34, 206, 0.5);
+}
+
+.po-update-modal__btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.po-update-modal__btn-secondary {
+  background: var(--white);
+  color: var(--gray-500);
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  border: 1px solid var(--gray-200);
+  cursor: pointer;
+}
+
+.po-update-modal__btn-secondary:hover {
+  background: var(--purple-soft);
+}
+
+@media (max-width: 480px) {
+  .po-update-modal__context {
+    grid-template-columns: 1fr;
+  }
+}
