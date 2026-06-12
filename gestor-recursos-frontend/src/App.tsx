@@ -3,6 +3,7 @@ import AppLayout from './components/layout/AppLayout/AppLayout';
 import DashboardPage from './pages/DashboardPage/DashboardPage';
 import ResourcesPage from './pages/ResourcesPage/ResourcesPage';
 import PurchaseOrdersPage from './pages/PurchaseOrdersPage/PurchaseOrdersPage';
+import AlertsPage from './pages/AlertsPage/AlertsPage';
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
           <Route index element={<DashboardPage />} />
           <Route path="resources" element={<ResourcesPage />} />
           <Route path="purchase-orders" element={<PurchaseOrdersPage />} />
+          <Route path="alerts" element={<AlertsPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -5,21 +5,26 @@ import {
   import { AlertType, AlertStatus } from '../enums';
   import { Resource } from './resource.entity';
   import { Manager } from './manager.entity';
+  import { PurchaseOrder } from './purchase-order.entity';
   
   @Entity('alert_notifications')
   export class AlertNotification {
     @PrimaryGeneratedColumn()
     id: number;
   
-    @Column({ nullable: true })
-    resourceId: number;
+    @Column({ type: 'integer', nullable: true })
+    resourceId: number | null;
   
     @ManyToOne(() => Resource, { nullable: true })
     @JoinColumn({ name: 'resourceId' })
     resource: Resource;
   
-    @Column({ nullable: true })
-    purchaseOrderId: number;
+    @Column({ type: 'integer', nullable: true })
+    purchaseOrderId: number | null;
+
+    @ManyToOne(() => PurchaseOrder, { nullable: true })
+    @JoinColumn({ name: 'purchaseOrderId' })
+    purchaseOrder: PurchaseOrder;
   
     @Column()
     managerId: number;
@@ -31,8 +36,8 @@ import {
     @Column({ type: 'simple-enum', enum: AlertType })
     alertType: AlertType;
   
-    @Column({ nullable: true })
-    daysRemaining: number;
+    @Column({ type: 'integer', nullable: true })
+    daysRemaining: number | null;
   
     @Column({ type: 'simple-enum', enum: AlertStatus, default: AlertStatus.MOCKED })
     status: AlertStatus;

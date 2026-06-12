@@ -36,4 +36,15 @@ export function formatPONumber(poNumber: string | null | undefined): string {
   return poNumber?.trim() ? poNumber : 'Sin número';
 }
 
+export function formatDateTime(dateStr: string): string {
+  const date = new Date(dateStr);
+  return date.toLocaleString('es-PE', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
 export { parseLocalDate, calculateDaysRemaining } from './dates';
