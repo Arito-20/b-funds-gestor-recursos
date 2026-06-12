@@ -10,11 +10,24 @@ async function bootstrap() {
   const port = Number(process.env.PORT) || 3000;
 
   const corsOrigins = process.env.CORS_ORIGIN
-    ? process.env.CORS_ORIGIN.split(',').map((origin) => origin.trim())
-    : ['http://localhost:5173'];
+  ? process.env.CORS_ORIGIN.split(',').map((origin) => origin.trim())
+  : [
+      'http://localhost:5173',
+      'http://127.0.0.1:5173',
+      'http://localhost:5174',
+      'http://127.0.0.1:5174',
+    ];
 
   app.enableCors({
     origin: corsOrigins,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'x-demo-user',
+      'Accept',
+      'Origin',
+    ],
   });
 
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
