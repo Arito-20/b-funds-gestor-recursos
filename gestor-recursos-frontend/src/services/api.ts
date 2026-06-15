@@ -1,6 +1,13 @@
 import axios from 'axios';
-import type { CreateResourcePayload, PurchaseOrder } from '../types';
-
+import type {
+  CreateResourcePayload,
+  PurchaseOrder,
+  AlertNotification,
+  AlertsSummary,
+  RunAlertValidationResponse,
+  TestAlertEmailResponse,
+  ExecutiveSummaryResponse,
+} from '../types';
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 export const api = axios.create({
@@ -38,10 +45,24 @@ export const dashboardApi = {
   getSummary: () => api.get('/api/dashboard/summary'),
 };
 
+// AI / Resumen ejecutivo
+export const aiApi = {
+  getExecutiveSummary: () => api.get<ExecutiveSummaryResponse>('/api/ai/executive-summary'),
+};
+
 // Catálogos
 export const catalogApi = {
   getManagers: () => api.get('/api/managers'),
   getProviders: () => api.get('/api/providers'),
   getInitiatives: () => api.get('/api/initiatives'),
   getExchangeRates: () => api.get('/api/exchange-rates'),
+};
+
+// Alertas
+export const alertsApi = {
+  getAlerts: () => api.get<AlertNotification[]>('/api/alerts'),
+  getAlertsSummary: () => api.get<AlertsSummary>('/api/alerts/summary'),
+  runAlertValidation: () => api.post<RunAlertValidationResponse>('/api/alerts/run-validation'),
+  testAlertEmail: (to?: string) =>
+    api.post<TestAlertEmailResponse>('/api/alerts/test-email', to ? { to } : {}),
 };

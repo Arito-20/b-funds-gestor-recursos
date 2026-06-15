@@ -1,0 +1,43 @@
+@import '../../pages/ResourcesPage/ResourcesPage.css';
+
+.alerts-page {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.alerts-page__header {
+  margin-bottom: 2px;
+}
+
+.alerts-page__kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (min-width: 768px) {
+  .alerts-page__kpi-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.alerts-page__error {
+  background: var(--danger-bg);
+  color: var(--danger);
+  padding: 16px 20px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.alerts-page__error-retry {
+  color: var(--purple-main);
+  font-weight: 600;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
+}

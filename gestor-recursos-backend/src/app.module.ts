@@ -18,6 +18,8 @@ import { ManagersModule } from './modules/managers/managers.module';
 import { ProvidersModule } from './modules/providers/providers.module';
 import { InitiativesModule } from './modules/initiatives/initiatives.module';
 import { ExchangeRatesModule } from './modules/exchange-rates/exchange-rates.module';
+import { AlertsModule } from './modules/alerts/alerts.module';
+import { AiModule } from './modules/ai/ai.module';
 
 @Module({
   imports: [
@@ -40,6 +42,8 @@ import { ExchangeRatesModule } from './modules/exchange-rates/exchange-rates.mod
     ProvidersModule,
     InitiativesModule,
     ExchangeRatesModule,
+    AlertsModule,
+    AiModule,
   ],
   controllers: [AppController],
   providers: [AppService],

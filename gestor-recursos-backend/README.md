@@ -1,98 +1,92 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# B-Funds — Backend (NestJS)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API del Gestor de Recursos Externos. Swagger en `/api/docs`.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
+## Configuración
 
 ```bash
-$ npm install
+cp .env.example .env
+npm install
+npm run start:dev
 ```
 
-## Compile and run the project
+Variables principales: `PORT`, `CORS_ORIGIN`, `DATABASE_LOCATION`. Ver `.env.example`.
+
+## Scripts
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm run start:dev   # desarrollo con watch
+npm run build       # compilar
+npm run start:prod  # producción (dist/main)
+npm run seed        # datos demo
 ```
 
-## Run tests
+## Alertas — notificaciones por correo (Microsoft 365)
 
-```bash
-# unit tests
-$ npm run test
+El módulo de Alertas (`src/modules/alerts/`) usa `EmailService` con modos **MOCK** y **SMTP**.
 
-# e2e tests
-$ npm run test:e2e
+### Variables de entorno
 
-# test coverage
-$ npm run test:cov
+| Variable | Descripción |
+|----------|-------------|
+| `ALERT_EMAIL_MODE` | `MOCK` (default) o `SMTP` |
+| `SMTP_HOST` | `smtp.office365.com` para Microsoft 365 / Outlook |
+| `SMTP_PORT` | `587` (STARTTLS) |
+| `SMTP_SECURE` | `false` para puerto 587 |
+| `SMTP_USER` | Cuenta emisora autorizada por IT |
+| `SMTP_PASS` | Credencial de la cuenta (no versionar) |
+| `SMTP_FROM` | Remitente visible, p. ej. `"B-Funds Alerts <no-reply@belcorp.biz>"` |
+| `ALERT_EMAIL_ALLOWLIST` | Correos permitidos, separados por coma. Vacío = no envío real en SMTP |
+| `ALERT_EMAIL_TEST_RECIPIENT` | Redirige todos los envíos a este correo en pruebas |
+
+Ejemplo en `.env.example` (valores seguros para el repo):
+
+```env
+ALERT_EMAIL_MODE=MOCK
+SMTP_HOST=smtp.office365.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=
+SMTP_PASS=
+SMTP_FROM="B-Funds Alerts <no-reply@belcorp.biz>"
+ALERT_EMAIL_ALLOWLIST=
+ALERT_EMAIL_TEST_RECIPIENT=
 ```
 
-## Deployment
+### Desarrollo local (MOCK)
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+- Las alertas se procesan y persisten con `status = MOCKED`.
+- `POST /api/alerts/run-validation` y `POST /api/alerts/test-email` **no envían correos reales**.
+- No se requiere configuración SMTP.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Prueba controlada de envío (solo `.env` local)
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+Si necesitas validar SMTP con Microsoft 365, configura **únicamente en tu `.env` local**:
+
+```env
+ALERT_EMAIL_MODE=SMTP
+SMTP_USER=tu-buzon@belcorp.biz
+SMTP_PASS=***
+ALERT_EMAIL_TEST_RECIPIENT=tu-correo-corporativo
+ALERT_EMAIL_ALLOWLIST=tu-correo-corporativo
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Usa **Probar correo** en la UI (`POST /api/alerts/test-email`) antes de ejecutar validaciones masivas.
 
-## Resources
+### Producción
 
-Check out a few resources that may come in handy when working with NestJS:
+- Coordinar con **IT** un buzón emisor autorizado.
+- Confirmar que **SMTP AUTH** está habilitado para esa cuenta, o evaluar alternativas: **Microsoft Graph API**, **Power Automate**, **Workato**.
+- Mantener `ALERT_EMAIL_ALLOWLIST` acotada durante pruebas.
+- **Nunca** commitear `.env`, contraseñas ni secretos.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Endpoints de alertas
 
-## Support
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| POST | `/api/alerts/run-validation` | Detecta riesgos y crea alertas (idempotente por día) |
+| GET | `/api/alerts` | Lista alertas visibles por rol |
+| GET | `/api/alerts/summary` | Resumen por tipo y estado |
+| POST | `/api/alerts/test-email` | Correo de prueba sin crear alerta |
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Header demo: `x-demo-user` (ver Swagger).

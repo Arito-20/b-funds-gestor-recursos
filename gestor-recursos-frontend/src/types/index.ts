@@ -210,3 +210,94 @@ export interface Manager {
     const key = localStorage.getItem('demoUser') || 'manager-peru';
     return DEMO_USERS.find(u => u.key === key) ?? DEMO_USERS[0];
   }
+
+  export type AlertType =
+    | 'EXPIRATION_AMBER'
+    | 'EXPIRATION_RED'
+    | 'EXPIRED'
+    | 'PO_PENDING';
+
+  export type AlertStatus =
+    | 'SENT'
+    | 'FAILED'
+    | 'MOCKED';
+
+  export interface AlertNotification {
+    id: number;
+    resourceId?: number | null;
+    purchaseOrderId?: number | null;
+    managerId: number;
+    alertType: AlertType;
+    daysRemaining?: number | null;
+    status: AlertStatus;
+    message?: string | null;
+    sentAt: string;
+    resource?: Resource | null;
+    purchaseOrder?: PurchaseOrder | null;
+    manager?: Manager | null;
+  }
+
+  export interface AlertsSummary {
+    total: number;
+    expirationAmber: number;
+    expirationRed: number;
+    expired: number;
+    poPending: number;
+    mocked: number;
+    failed: number;
+  }
+
+  export interface AlertEmailRecord {
+    managerName: string;
+    managerEmail: string;
+    recipient: string;
+    subject: string;
+    message: string;
+    status: AlertStatus;
+  }
+
+  export interface RunAlertValidationResponse {
+    processedResources: number;
+    processedPurchaseOrders: number;
+    createdAlerts: number;
+    skippedDuplicates: number;
+    alertsByType: {
+      EXPIRATION_AMBER: number;
+      EXPIRATION_RED: number;
+      EXPIRED: number;
+      PO_PENDING: number;
+    };
+    emails: AlertEmailRecord[];
+    mockedEmails: Array<{
+      managerName: string;
+      managerEmail: string;
+      subject: string;
+      message: string;
+    }>;
+  }
+
+  export interface TestAlertEmailResponse {
+    status: AlertStatus;
+    recipient: string;
+    subject: string;
+    message: string;
+    error?: string;
+  }
+
+  export interface ExecutiveSummaryMetrics {
+    activeResources: number;
+    monthlyCostUsd: number;
+    totalCommittedUsd: number;
+    pendingPurchaseOrders: number;
+    riskResources: number;
+  }
+
+  export interface ExecutiveSummaryResponse {
+    scope: string;
+    summary: string;
+    risks: string[];
+    recommendations: string[];
+    metrics: ExecutiveSummaryMetrics;
+    workatoReady: boolean;
+    generatedAt: string;
+  }
