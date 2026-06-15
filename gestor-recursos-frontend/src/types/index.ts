@@ -283,3 +283,21 @@ export interface Manager {
     message: string;
     error?: string;
   }
+
+  export interface ExecutiveSummaryMetrics {
+    activeResources: number;
+    monthlyCostUsd: number;
+    totalCommittedUsd: number;
+    pendingPurchaseOrders: number;
+    riskResources: number;
+  }
+
+  export interface ExecutiveSummaryResponse {
+    scope: string;
+    summary: string;
+    risks: string[];
+    recommendations: string[];
+    metrics: ExecutiveSummaryMetrics;
+    workatoReady: boolean;
+    generatedAt: string;
+  }

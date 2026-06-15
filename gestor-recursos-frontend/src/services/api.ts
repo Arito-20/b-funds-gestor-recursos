@@ -6,6 +6,7 @@ import type {
   AlertsSummary,
   RunAlertValidationResponse,
   TestAlertEmailResponse,
+  ExecutiveSummaryResponse,
 } from '../types';
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
@@ -42,6 +43,11 @@ export const purchaseOrdersApi = {
 // Dashboard
 export const dashboardApi = {
   getSummary: () => api.get('/api/dashboard/summary'),
+};
+
+// AI / Resumen ejecutivo
+export const aiApi = {
+  getExecutiveSummary: () => api.get<ExecutiveSummaryResponse>('/api/ai/executive-summary'),
 };
 
 // Catálogos

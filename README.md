@@ -67,6 +67,31 @@ Requisitos y recomendaciones:
 
 Documentación detallada: [`gestor-recursos-backend/README.md`](gestor-recursos-backend/README.md#alertas--notificaciones-por-correo-microsoft-365).
 
+## Bonus Workato GO-ready
+
+El sistema expone un endpoint de resumen ejecutivo pensado para integraciones con Workato Genie:
+
+```
+GET /api/ai/executive-summary
+```
+
+- Requiere el header `x-demo-user` (igual que el resto de la API demo).
+- **MANAGER**: genera un resumen de su cartera (`managerId`).
+- **FINANCE / ADMIN**: genera una vista financiera consolidada.
+- La respuesta incluye `summary`, `risks`, `recommendations`, `metrics`, `workatoReady` y `generatedAt`.
+- El texto se genera de forma **determinística** con reglas sobre datos reales del sistema (vencimientos, OCs pendientes, presupuesto).
+- **No se integró IA externa en local** para mantener seguridad y simplicidad del entorno de desarrollo.
+- En **producción**, Workato GO podría consumir este endpoint mediante una skill o recipe HTTP y enriquecer la respuesta con AI by Workato, Azure OpenAI u otro modelo autorizado por la organización.
+
+Ejemplo de consumo:
+
+```bash
+curl -H "x-demo-user: manager-colombia" http://localhost:3000/api/ai/executive-summary
+curl -H "x-demo-user: finance" http://localhost:3000/api/ai/executive-summary
+```
+
+En el Dashboard, la card **Resumen ejecutivo** muestra la misma información con botón **Actualizar resumen**.
+
 ## Build
 
 ```bash

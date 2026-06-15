@@ -3,6 +3,7 @@ import { dashboardApi, catalogApi, resourcesApi, purchaseOrdersApi } from '../..
 import type { DashboardSummary, Initiative, PurchaseOrder, Resource } from '../../types';
 import { getCurrentDemoUser } from '../../types';
 import KPICard from '../../components/dashboard/KPICard/KPICard';
+import ExecutiveSummaryCard from '../../components/dashboard/ExecutiveSummaryCard/ExecutiveSummaryCard';
 import ExpirationTable from '../../components/dashboard/ExpirationTable/ExpirationTable';
 import BudgetTable from '../../components/dashboard/BudgetTable/BudgetTable';
 import CountryCards from '../../components/dashboard/CountryCards/CountryCards';
@@ -169,6 +170,8 @@ export default function DashboardPage() {
           </div>
         </div>
       </section>
+
+      <ExecutiveSummaryCard />
 
       <section className="dashboard-kpi-grid dashboard-kpi-grid--primary">
         <KPICard
