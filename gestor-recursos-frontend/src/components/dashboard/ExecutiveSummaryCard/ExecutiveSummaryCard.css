@@ -1,3 +1,28 @@
+@keyframes executiveSummarySpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes executiveSummaryPulse {
+  0%, 100% {
+    box-shadow: var(--shadow-card);
+    border-color: var(--purple-lila);
+  }
+  50% {
+    box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.15), var(--shadow-card);
+    border-color: var(--purple-main);
+  }
+}
+
+@keyframes executiveSummaryShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes executiveSummaryFadeIn {
+  from { opacity: 0; transform: translateY(-2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .executive-summary-card {
   background: var(--white);
   border: 1px solid var(--purple-lila);
@@ -7,6 +32,16 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.executive-summary-card--refreshing {
+  animation: executiveSummaryPulse 1.4s ease-in-out infinite;
+}
+
+.executive-summary-card--updated {
+  border-color: var(--purple-main);
+  box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.2), var(--shadow-card);
 }
 
 .executive-summary-card__header {
@@ -15,6 +50,27 @@
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.executive-summary-card__header--shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(124, 58, 237, 0.06) 45%,
+    rgba(124, 58, 237, 0.12) 50%,
+    rgba(124, 58, 237, 0.06) 55%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: executiveSummaryShimmer 1.2s ease-in-out infinite;
+  pointer-events: none;
+  border-radius: 8px;
 }
 
 .executive-summary-card__heading {
@@ -104,7 +160,52 @@
   border: 2px solid rgba(255, 255, 255, 0.35);
   border-top-color: var(--white);
   border-radius: 50%;
-  animation: spin 0.7s linear infinite;
+  animation: executiveSummarySpin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+.executive-summary-card__status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  min-height: 18px;
+}
+
+.executive-summary-card__status-message {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  animation: executiveSummaryFadeIn 0.25s ease-out both;
+}
+
+.executive-summary-card__status-message--success {
+  color: var(--purple-main);
+}
+
+.executive-summary-card__status-message--error {
+  color: var(--danger);
+}
+
+.executive-summary-card__status-time {
+  font-size: 0.6875rem;
+  color: var(--gray-500);
+}
+
+.executive-summary-card__loading {
+  font-size: 0.75rem;
+  color: var(--gray-500);
+  font-style: italic;
+}
+
+.executive-summary-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: opacity 0.2s ease;
+}
+
+.executive-summary-card__content--dimmed {
+  opacity: 0.72;
 }
 
 .executive-summary-card__error {
